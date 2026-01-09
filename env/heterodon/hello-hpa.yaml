@@ -14,7 +14,7 @@ spec:
         fullnameOverride: "hello-hpa"
         image:
           repository: ghcr.io/soft-titus/hello
-          tag: 0.0.0 # {"$imagepolicy": "flux-system:hello:tag"}
+          tag: 0.0.0 # {"$imagepolicy": "hello-hpa:hello-hpa:tag"}
           fluxImageAutoUpdate:
             enabled: true
             pattern: "^[1-9]+\\.[0-9]+\\.[0-9]+$"
