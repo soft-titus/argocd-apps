@@ -11,9 +11,9 @@ metadata:
     argocd-image-updater.argoproj.io/app.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/app.helm.image-tag: image.tag
     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-credential-secrets
+    argocd-image-updater.argoproj.io/write-back-target: manifest
     argocd-image-updater.argoproj.io/git-repository: git@github.com:soft-titus/argocd-apps
     argocd-image-updater.argoproj.io/git-branch: main
-    argocd-image-updater.argoproj.io/git-path: env/heterodon/hello-hpa.yaml
 spec:
   project: hello
   source:
@@ -25,7 +25,7 @@ spec:
         fullnameOverride: "hello-hpa"
         image:
           repository: ghcr.io/soft-titus/hello
-          tag: "1.0.0"
+          tag: "0.0.0"
         configMaps:
           env:
             enabled: true
