@@ -1,8 +1,19 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: hello-hpa
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: app=ghcr.io/soft-titus/hello
+    argocd-image-updater.argoproj.io/app.update-strategy: semver
+    argocd-image-updater.argoproj.io/app.allow-tags: ">=1.0.0 <2.0.0"
+    argocd-image-updater.argoproj.io/app.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/app.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-credential-secrets
+    argocd-image-updater.argoproj.io/git-repository: git@github.com:soft-titus/argocd-apps
+    argocd-image-updater.argoproj.io/git-branch: main
+    argocd-image-updater.argoproj.io/git-path: env/heterodon/hello-hpa.yaml
 spec:
   project: hello
   source:
