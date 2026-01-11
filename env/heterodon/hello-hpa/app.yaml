@@ -4,15 +4,6 @@ kind: Application
 metadata:
   name: hello-hpa
   namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: app=ghcr.io/soft-titus/hello
-    argocd-image-updater.argoproj.io/app.update-strategy: semver
-    argocd-image-updater.argoproj.io/app.allow-tags: 'regexp:^1\.[0-9]+\.[0-9]+$'
-    argocd-image-updater.argoproj.io/app.helm.image-name: microservice.image.repository
-    argocd-image-updater.argoproj.io/app.helm.image-tag: microservice.image.tag
-    argocd-image-updater.argoproj.io/app.force-update: "true"
-    argocd-image-updater.argoproj.io/write-back-method: git
-    argocd-image-updater.argoproj.io/write-back-target: helmvalues:/env/heterodon/hello-hpa/values.yaml
 spec:
   project: hello
   source:

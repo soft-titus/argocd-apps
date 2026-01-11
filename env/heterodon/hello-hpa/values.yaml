@@ -2,7 +2,26 @@ microservice:
   fullnameOverride: "hello-hpa"
   image:
     repository: ghcr.io/soft-titus/hello
-    tag: "1.0.0"
+    tag: "0.0.0"
+    argocdImageUpdater:
+      enabled: true
+      applicationNamespace: "argocd"
+      applicationNamePattern: "hello-hpa"
+      images:
+        - alias: app
+          imageName: ghcr.io/soft-titus/hello
+          commonUpdateSettings:
+            forceUpdate: true
+            updateStrategy: semver
+            allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+          manifestTargets:
+            helm:
+              name: microservice.image.repository
+              tag: microservice.image.tag
+      writeBackConfig:
+        method: git
+        gitConfig:
+          writeBackTarget: "helmvalues:/env/heterodon/hello-hpa/values.yaml"
   configMaps:
     env:
       enabled: true
