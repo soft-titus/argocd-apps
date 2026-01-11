@@ -1,0 +1,7 @@
+apiVersion: v2
+name: hello-hpa
+version: 1.0.0
+dependencies:
+  - name: microservice
+    version: "0.*"
+    repository: "https://soft-titus.github.io/titus-charts"

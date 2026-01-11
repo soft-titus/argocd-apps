@@ -10,16 +10,14 @@ metadata:
     argocd-image-updater.argoproj.io/app.allow-tags: "^[1-9]+\\.[0-9]+\\.[0-9]+$"
     argocd-image-updater.argoproj.io/app.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/app.helm.image-tag: image.tag
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-credential-secrets
-    argocd-image-updater.argoproj.io/git-repository: git@github.com:soft-titus/argocd-apps
-    argocd-image-updater.argoproj.io/git-branch: main
+    argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/write-back-target: helmvalues:/env/heterodon/hello-hpa/values.yaml
 spec:
   project: hello
   source:
-    repoURL: https://soft-titus.github.io/titus-charts
-    chart: microservice
-    targetRevision: "0.*"
+    repoURL: git@github.com:soft-titus/argocd-apps.git
+    path: "env/heterodon/hello-hpa"
+    targetRevision: main
     helm:
       valueFiles:
         - env/heterodon/hello-hpa/values.yaml
