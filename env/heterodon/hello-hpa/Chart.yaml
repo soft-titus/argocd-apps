@@ -1,3 +1,4 @@
+---
 apiVersion: v2
 name: hello-hpa
 version: 1.0.0

@@ -1,3 +1,4 @@
+---
 fullnameOverride: "hello-hpa"
 image:
   repository: ghcr.io/soft-titus/hello
