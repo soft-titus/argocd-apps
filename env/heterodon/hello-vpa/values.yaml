@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "hello-vpa"
   image:
     repository: ghcr.io/soft-titus/hello
-    tag: "0.0.0"
+    tag: "1.0.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -41,17 +41,17 @@ microservice:
     minReplicas: 1
     resourcePolicy:
       containerPolicies:
-        - containerName: "*"
-          minAllowed:
-            cpu: 50m
-            memory: 64Mi
-          maxAllowed:
-            cpu: "1"
-            memory: 1Gi
-          controlledValues: RequestsAndLimits
-          controlledResources:
-            - cpu
-            - memory
+      - containerName: "*"
+        minAllowed:
+          cpu: 50m
+          memory: 64Mi
+        maxAllowed:
+          cpu: "1"
+          memory: 1Gi
+        controlledValues: RequestsAndLimits
+        controlledResources:
+        - cpu
+        - memory
   service:
     enabled: true
     ports:
