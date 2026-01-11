@@ -1,9 +1,8 @@
----
 microservice:
   fullnameOverride: "hello-hpa"
   image:
     repository: ghcr.io/soft-titus/hello
-    tag: "0.0.0"
+    tag: "1.0.0"
   configMaps:
     env:
       enabled: true
@@ -25,22 +24,21 @@ microservice:
   service:
     enabled: true
     ports:
-      - name: http
-        port: 80
-        containerPort: 8080
+    - name: http
+      port: 80
+      containerPort: 8080
   httpRoute:
     enabled: true
     parentRefs:
-      - name: envoy-gateway
-        namespace: envoy-gateway-system
+    - name: envoy-gateway
+      namespace: envoy-gateway-system
     hostnames:
-      - hello-hpa.heterodon.local
+    - hello-hpa.heterodon.local
     rules:
-      - matches:
-          - path:
-              type: PathPrefix
-              value: /
-        backendRefs:
-          - name: hello-hpa
-            port: 80
-  
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+      backendRefs:
+      - name: hello-hpa
+        port: 80
