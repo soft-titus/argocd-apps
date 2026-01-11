@@ -21,8 +21,7 @@ microservice:
       writeBackConfig:
         method: git
         gitConfig:
-          writeBackTarget: "helmvalue
-          s:/env/heterodon/hello-vpa/values.yaml"
+          writeBackTarget: "helmvalues:/env/heterodon/hello-vpa/values.yaml"
   configMaps:
     env:
       enabled: true
