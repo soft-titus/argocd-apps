@@ -1,0 +1,58 @@
+microservice:
+  fullnameOverride: "hello"
+  image:
+    repository: ghcr.io/soft-titus/hello
+    tag: "0.0.0"
+    argocdImageUpdater:
+      enabled: true
+      applicationNamespace: "argocd"
+      applicationNamePattern: "hello"
+      images:
+      - alias: app
+        imageName: ghcr.io/soft-titus/hello
+        commonUpdateSettings:
+          forceUpdate: true
+          updateStrategy: semver
+          allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+        manifestTargets:
+          helm:
+            name: microservice.image.repository
+            tag: microservice.image.tag
+      writeBackConfig:
+        method: git
+        gitConfig:
+          writeBackTarget: "helmvalues:/env/irrawaddy/hello/values.yaml"
+  configMaps:
+    env:
+      enabled: true
+      data:
+        LOG_LEVEL: "INFO"
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  service:
+    enabled: true
+    ports:
+    - name: http
+      port: 80
+      containerPort: 8080
+  httpRoute:
+    enabled: true
+    parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway-system
+    hostnames:
+    - hello.irrawaddy.local
+    rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+      backendRefs:
+      - name: hello
+        port: 80
