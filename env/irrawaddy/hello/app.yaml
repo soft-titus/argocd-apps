@@ -8,7 +8,7 @@ spec:
   project: hello
   source:
     repoURL: git@github.com:soft-titus/argocd-apps.git
-    path: "env/heterodon/hello"
+    path: "env/irrawaddy/hello"
     targetRevision: main
     helm:
       valueFiles:
