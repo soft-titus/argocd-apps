@@ -61,31 +61,31 @@ microservice:
       - name: hello-metrics
         port: 80
   volumes:
-    - name: metrics-data
-      emptyDir: {}
+  - name: metrics-data
+    emptyDir: {}
   volumeMounts:
+  - name: metrics-data
+    mountPath: /tmp/metrics
+  sidecars:
+  - name: metrics
+    image:
+      repository: "{{ .Values.image.repository }}"
+      tag: "{{ .Values.image.tag }}"
+      pullPolicy: IfNotPresent
+    ports:
+    - name: metrics
+      containerPort: 9090
+    envFrom:
+    - configMapRef:
+        name: {? {default (printf "%s-env" (include "microservice.fullname" .)) .Values.configMaps.env.name: ''} : ''}
+    volumeMounts:
     - name: metrics-data
       mountPath: /tmp/metrics
-  sidecars:
-    - name: metrics
-      image:
-        repository: "{{ .Values.image.repository }}"
-        tag: "{{ .Values.image.tag }}"
-        pullPolicy: IfNotPresent
-      ports:
-        - name: metrics
-          containerPort: 9090
-      envFrom:
-        - configMapRef:
-            name: {{ default (printf "%s-env" (include "microservice.fullname" .)) .Values.configMaps.env.name }}
-      volumeMounts:
-        - name: metrics-data
-          mountPath: /tmp/metrics
-      command:
-        - "uvicorn"
-      args:
-        - "app.metrics_server:metrics_app"
-        - "--host"
-        - "0.0.0.0"
-        - "--port"
-        - "9090"
+    command:
+    - "uvicorn"
+    args:
+    - "app.metrics_server:metrics_app"
+    - "--host"
+    - "0.0.0.0"
+    - "--port"
+    - "9090"
