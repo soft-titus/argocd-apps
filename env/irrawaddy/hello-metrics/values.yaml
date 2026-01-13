@@ -56,6 +56,10 @@ microservice:
     - name: metrics
       port: 9090
       containerPort: 9090
+  serviceMonitor:
+    enabled: true
+    port: "metrics"
+    path: "/metrics"
   httpRoute:
     enabled: true
     parentRefs:
