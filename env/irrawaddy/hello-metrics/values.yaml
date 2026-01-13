@@ -27,6 +27,8 @@ microservice:
         manifestTargets:
           helm:
             spec: microservice.sidecars[0].image
+            name: microservice.sidecars[0].image
+            tag: microservice.sidecars[0].image
       writeBackConfig:
         method: git
         gitConfig:
