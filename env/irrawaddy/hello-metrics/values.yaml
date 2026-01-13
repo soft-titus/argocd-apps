@@ -27,6 +27,7 @@ microservice:
       enabled: true
       data:
         LOG_LEVEL: "INFO"
+        PROMETHEUS_MULTIPROC_DIR: "/tmp/metrics"
   replicaCount: 1
   resources:
     requests:
@@ -41,6 +42,9 @@ microservice:
     - name: http
       port: 80
       containerPort: 8080
+    - name: metrics
+      port: 9090
+      containerPort: 9090
   httpRoute:
     enabled: true
     parentRefs:
@@ -56,3 +60,32 @@ microservice:
       backendRefs:
       - name: hello-metrics
         port: 80
+  volumes:
+    - name: metrics-data
+      emptyDir: {}
+  volumeMounts:
+    - name: metrics-data
+      mountPath: /tmp/metrics
+  sidecars:
+    - name: metrics
+      image:
+        repository: "{{ .Values.image.repository }}"
+        tag: "{{ .Values.image.tag }}"
+        pullPolicy: IfNotPresent
+      ports:
+        - name: metrics
+          containerPort: 9090
+      envFrom:
+        - configMapRef:
+            name: {{ default (printf "%s-env" (include "microservice.fullname" .)) .Values.configMaps.env.name }}
+      volumeMounts:
+        - name: metrics-data
+          mountPath: /tmp/metrics
+      command:
+        - "uvicorn"
+      args:
+        - "app.metrics_server:metrics_app"
+        - "--host"
+        - "0.0.0.0"
+        - "--port"
+        - "9090"
