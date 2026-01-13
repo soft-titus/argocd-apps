@@ -26,8 +26,7 @@ microservice:
           allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
         manifestTargets:
           helm:
-            name: microservice.sidecars[0].image.repository
-            tag: microservice.sidecars[0].image.tag
+            spec: microservice.sidecars[0].image
       writeBackConfig:
         method: git
         gitConfig:
@@ -78,10 +77,8 @@ microservice:
     mountPath: /tmp/metrics
   sidecars:
   - name: metrics
-    image:
-        repository: ghcr.io/soft-titus/hello-metrics
-        tag: "1.0.0"
-      pullPolicy: IfNotPresent
+    image: ghcr.io/soft-titus/hello-metrics:1.0.0
+    imagePullPolicy: IfNotPresent
     ports:
     - name: metrics
       containerPort: 9090
