@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "hello-metrics"
   image:
     repository: ghcr.io/soft-titus/hello-metrics
-    tag: "1.1.0"
+    tag: "1.0.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -18,6 +18,16 @@ microservice:
           helm:
             name: microservice.image.repository
             tag: microservice.image.tag
+      - alias: metrics
+        imageName: ghcr.io/soft-titus/hello-metrics
+        commonUpdateSettings:
+          forceUpdate: true
+          updateStrategy: semver
+          allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+        manifestTargets:
+          helm:
+            name: microservice.sidecars[0].image.repository
+            tag: microservice.sidecars[0].image.tag
       writeBackConfig:
         method: git
         gitConfig:
@@ -69,15 +79,15 @@ microservice:
   sidecars:
   - name: metrics
     image:
-      repository: "{{ .Values.image.repository }}"
-      tag: "{{ .Values.image.tag }}"
+        repository: ghcr.io/soft-titus/hello-metrics
+        tag: "1.0.0"
       pullPolicy: IfNotPresent
     ports:
     - name: metrics
       containerPort: 9090
     envFrom:
     - configMapRef:
-        name: {? {default (printf "%s-env" (include "microservice.fullname" .)) .Values.configMaps.env.name: ''} : ''}
+        name: hello-metrics-env
     volumeMounts:
     - name: metrics-data
       mountPath: /tmp/metrics
