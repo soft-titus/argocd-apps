@@ -113,7 +113,6 @@ microservice:
       - alias: app
         imageName: ghcr.io/soft-titus/hello
         commonUpdateSettings:
-          forceUpdate: true
           updateStrategy: semver
           allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
         manifestTargets:
