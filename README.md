@@ -14,8 +14,10 @@ repository and deploys a Helm chart with environment specific values.
 argocd-apps/
 └── env/
     └── <cluster>/
+        └── charts/
+            └── <chart-name>/
+                ├── Chart.yaml
         └── <app>/
-            ├── Chart.yaml
             ├── app.yaml
             └── values.yaml
 ```
@@ -47,12 +49,13 @@ updated image tags back to this repository.
 Declares the Helm dependency:
 
 ```yaml
+# env/my-cluster/charts/microservice/Chart.yaml
 apiVersion: v2
-name: hello
-version: 1.0.0
+name: microservice-wrapper
+version: 0.6.2
 dependencies:
   - name: microservice
-    version: "0.*"
+    version: "0.6.2"
     repository: "https://soft-titus.github.io/titus-charts"
 ```
 
@@ -67,6 +70,7 @@ The app.yaml file defines how Argo CD deploys and syncs the application:
 - Helm values sourced from this repo
 
 ```yaml
+# env/my-cluster/hello/app.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -76,11 +80,11 @@ spec:
   project: default
   source:
     repoURL: git@github.com:soft-titus/argocd-apps.git
-    path: "env/my-cluster/hello"
+    path: "env/my-cluster/charts/microservice"
     targetRevision: main
     helm:
       valueFiles:
-        - values.yaml
+        - ../../hello/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: hello
