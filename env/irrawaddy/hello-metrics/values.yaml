@@ -45,6 +45,20 @@ microservice:
     limits:
       cpu: 500m
       memory: 512Mi
+  scaledObject:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    pollingInterval: 30
+    cooldownPeriod: 300
+    triggers:
+      - type: prometheus
+        metadata:
+          serverAddress: http://prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
+          metricName: hello_requests_per_second
+          query: |
+            sum(rate(hello_requests_total[1m]))
+          threshold: "5"
   service:
     enabled: true
     ports:
