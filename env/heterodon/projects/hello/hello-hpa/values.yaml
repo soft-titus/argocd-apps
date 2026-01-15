@@ -1,12 +1,12 @@
 microservice:
-  fullnameOverride: "hello-vpa"
+  fullnameOverride: "hello-hpa"
   image:
     repository: ghcr.io/soft-titus/hello
     tag: "1.0.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
-      applicationNamePattern: "hello-vpa"
+      applicationNamePattern: "hello-hpa"
       images:
       - alias: app
         imageName: ghcr.io/soft-titus/hello
@@ -20,13 +20,12 @@ microservice:
       writeBackConfig:
         method: git
         gitConfig:
-          writeBackTarget: "helmvalues:/env/heterodon/hello-vpa/values.yaml"
+          writeBackTarget: "helmvalues:/env/heterodon/projects/hello/hello-hpa/values.yaml"
   configMaps:
     env:
       enabled: true
       data:
         LOG_LEVEL: "INFO"
-  replicaCount: 1
   resources:
     requests:
       cpu: 100m
@@ -34,23 +33,12 @@ microservice:
     limits:
       cpu: 500m
       memory: 512Mi
-  vpa:
+  hpa:
     enabled: true
-    updateMode: InPlaceOrRecreate
     minReplicas: 1
-    resourcePolicy:
-      containerPolicies:
-      - containerName: "*"
-        minAllowed:
-          cpu: 50m
-          memory: 64Mi
-        maxAllowed:
-          cpu: "1"
-          memory: 1Gi
-        controlledValues: RequestsAndLimits
-        controlledResources:
-        - cpu
-        - memory
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 75
   service:
     enabled: true
     ports:
@@ -63,12 +51,12 @@ microservice:
     - name: envoy-gateway
       namespace: envoy-gateway-system
     hostnames:
-    - hello-vpa.heterodon.local
+    - hello-hpa.heterodon.local
     rules:
     - matches:
       - path:
           type: PathPrefix
           value: /
       backendRefs:
-      - name: hello-vpa
+      - name: hello-hpa
         port: 80

@@ -17,9 +17,11 @@ argocd-apps/
         └── charts/
             └── <chart-name>/
                 ├── Chart.yaml
-        └── <app>/
-            ├── app.yaml
-            └── values.yaml
+        └── projects/
+            └── <project>/
+                └── <app>/
+                    ├── app.yaml
+                    └── values.yaml
 ```
 
 Each application directory represents a single Argo CD Application deployed to
@@ -70,7 +72,7 @@ The app.yaml file defines how Argo CD deploys and syncs the application:
 - Helm values sourced from this repo
 
 ```yaml
-# env/my-cluster/hello/app.yaml
+# env/my-cluster/default/hello/app.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -104,6 +106,7 @@ The values.yaml file configures values required by the Helm chart
 (in this case, the microservice dependency):
 
 ```yaml
+# env/my-cluster/default/hello/values.yaml
 microservice:
   ...
   image:
@@ -126,9 +129,9 @@ microservice:
       writeBackConfig:
         method: git
         gitConfig:
-          writeBackTarget: "helmvalues:/env/my-cluster/hello/values.yaml"
+          writeBackTarget: "helmvalues:/env/my-cluster/default/hello/values.yaml"
   ...
 ```
 
 When a new image tag is detected, Argo CD Image Updater commits the updated value
-to env/my-cluster/hello/values.yaml under microservice.image.tag.
+to env/my-cluster/default/hello/values.yaml under microservice.image.tag.

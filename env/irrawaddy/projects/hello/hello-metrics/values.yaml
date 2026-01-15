@@ -30,7 +30,7 @@ microservice:
       writeBackConfig:
         method: git
         gitConfig:
-          writeBackTarget: "helmvalues:/env/irrawaddy/hello-metrics/values.yaml"
+          writeBackTarget: "helmvalues:/env/irrawaddy/projects/hello/hello-metrics/values.yaml"
   configMaps:
     env:
       enabled: true
