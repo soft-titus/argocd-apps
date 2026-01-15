@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "hello"
   image:
     repository: ghcr.io/soft-titus/hello
-    tag: "1.0.0"
+    tag: "0.0.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"

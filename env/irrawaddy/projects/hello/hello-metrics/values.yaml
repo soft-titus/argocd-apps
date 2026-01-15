@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "hello-metrics"
   image:
     repository: ghcr.io/soft-titus/hello-metrics
-    tag: "1.1.0"
+    tag: "0.0.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -97,7 +97,7 @@ microservice:
     mountPath: /tmp/metrics
   sidecars:
   - name: metrics
-    image: ghcr.io/soft-titus/hello-metrics:1.1.0
+    image: ghcr.io/soft-titus/hello-metrics:0.0.0
     imagePullPolicy: IfNotPresent
     ports:
     - name: metrics
