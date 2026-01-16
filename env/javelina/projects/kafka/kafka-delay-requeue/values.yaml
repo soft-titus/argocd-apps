@@ -21,7 +21,7 @@ microservice:
       writeBackConfig:
         method: git
         gitConfig:
-          writeBackTarget: "helmvalues:/env/javelina/projects/kafka/ghcr.io/soft-titus/kafka-delay-requeue/values.yaml"
+          writeBackTarget: "helmvalues:/env/javelina/projects/kafka/kafka-delay-requeue/values.yaml"
   configMaps:
     env:
       enabled: true
