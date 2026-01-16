@@ -15,7 +15,7 @@ spec:
         - ../../projects/kafka/kafka-delay-requeue/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: kafka
+    namespace: default
   syncPolicy:
     automated:
       prune: true
