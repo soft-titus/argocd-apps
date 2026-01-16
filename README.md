@@ -122,6 +122,7 @@ microservice:
         commonUpdateSettings:
           updateStrategy: semver
           allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+          forceUpdate: true
         manifestTargets:
           helm:
             name: microservice.image.repository

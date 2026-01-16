@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "hello-vpa"
   image:
     repository: ghcr.io/soft-titus/hello
-    tag: "1.0.0"
+    tag: "0.0.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -13,6 +13,7 @@ microservice:
         commonUpdateSettings:
           updateStrategy: semver
           allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+          forceUpdate: true
         manifestTargets:
           helm:
             name: microservice.image.repository
