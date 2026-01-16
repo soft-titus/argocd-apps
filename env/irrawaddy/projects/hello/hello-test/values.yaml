@@ -1,57 +1,56 @@
-microservice:
-  fullnameOverride: "hello-test"
-  image:
-    repository: ghcr.io/soft-titus/hello
-    tag: "0.0.0"
-    argocdImageUpdater:
-      enabled: true
-      applicationNamespace: "argocd"
-      applicationNamePattern: "hello-test"
-      images:
-      - alias: app
-        imageName: ghcr.io/soft-titus/hello
-        commonUpdateSettings:
-          updateStrategy: semver
-          allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
-          forceUpdate: true
-        manifestTargets:
-          kustomize:
-            name: ghcr.io/soft-titus/hello
-      writeBackConfig:
-        method: git
-        gitConfig:
-          writeBackTarget: "kustomization"
-  configMaps:
-    env:
-      enabled: true
-      data:
-        LOG_LEVEL: "INFO"
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-  service:
+fullnameOverride: "hello-test"
+image:
+  repository: ghcr.io/soft-titus/hello
+  tag: "0.0.0"
+  argocdImageUpdater:
     enabled: true
-    ports:
-    - name: http
+    applicationNamespace: "argocd"
+    applicationNamePattern: "hello-test"
+    images:
+    - alias: app
+      imageName: ghcr.io/soft-titus/hello
+      commonUpdateSettings:
+        updateStrategy: semver
+        allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+        forceUpdate: true
+      manifestTargets:
+        kustomize:
+          name: ghcr.io/soft-titus/hello
+    writeBackConfig:
+      method: git
+      gitConfig:
+        writeBackTarget: "kustomization"
+configMaps:
+  env:
+    enabled: true
+    data:
+      LOG_LEVEL: "INFO"
+replicaCount: 1
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+service:
+  enabled: true
+  ports:
+  - name: http
+    port: 80
+    containerPort: 8080
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: envoy-gateway
+    namespace: envoy-gateway-system
+  hostnames:
+  - hello-test.irrawaddy.local
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: hello-test
       port: 80
-      containerPort: 8080
-  httpRoute:
-    enabled: true
-    parentRefs:
-    - name: envoy-gateway
-      namespace: envoy-gateway-system
-    hostnames:
-    - hello-test.irrawaddy.local
-    rules:
-    - matches:
-      - path:
-          type: PathPrefix
-          value: /
-      backendRefs:
-      - name: hello-test
-        port: 80
