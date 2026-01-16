@@ -1,0 +1,68 @@
+microservice:
+  fullnameOverride: "kafka-delay-requeue"
+  image:
+    repository: ghcr.io/soft-titus/kafka-delay-requeue
+    tag: "0.0.0"
+    argocdImageUpdater:
+      enabled: true
+      applicationNamespace: "argocd"
+      applicationNamePattern: "kafka-delay-requeue"
+      images:
+      - alias: app
+        imageName: ghcr.io/soft-titus/kafka-delay-requeue
+        commonUpdateSettings:
+          updateStrategy: semver
+          allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+          forceUpdate: true
+        manifestTargets:
+          helm:
+            name: microservice.image.repository
+            tag: microservice.image.tag
+      writeBackConfig:
+        method: git
+        gitConfig:
+          writeBackTarget: "helmvalues:/env/javelina/projects/kafka/ghcr.io/soft-titus/kafka-delay-requeue/values.yaml"
+  configMaps:
+    env:
+      enabled: true
+      data:
+        LOG_LEVEL: "INFO"
+        DELAY_SHORT_INTERVAL_SECONDS: "5"
+        DELAY_LONG_INTERVAL_SECONDS: "15"
+        KAFKA_CONSUMER_GROUP_NAME: "kafka.delay.requeue.group"
+        KAFKA_POOLING_INTERVAL_SECONDS: "15"
+        KAFKA_RETRIABLE_TOPIC: "retriable"
+        KAFKA_RETRIABLE_DLQ_TOPIC: "retriable.dlq"
+  envFrom:
+    - configMapRef:
+        name: kafka-configmap
+  serviceAccount:
+    create: false
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  scaledObject:
+    enabled: true
+    minReplicas: 0
+    maxReplicas: 1
+    pollingInterval: 15
+    cooldownPeriod: 30
+    triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-kafka-bootstrap.kafka.svc.cluster.local:9092
+        topic: retriable
+        consumerGroup: "kafka.delay.requeue.group"
+        lagThreshold: "1"
+        scaleToZeroOnInvalidOffset: "true"
+  service:
+    enabled: false
+  httpRoute:
+    enabled: false
+  podAnnotations:
+    reloader.stakater.com/auto: "true"

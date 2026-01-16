@@ -1,0 +1,22 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-delay-requeue
+  namespace: argocd
+spec:
+  project: kafka
+  source:
+    repoURL: git@github.com:soft-titus/argocd-apps.git
+    path: "env/javelina/charts/microservice"
+    targetRevision: main
+    helm:
+      valueFiles:
+        - ../../projects/kafka/kafka-delay-requeue/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kafka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
