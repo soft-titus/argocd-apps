@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "kafka-delay-requeue"
   image:
     repository: ghcr.io/soft-titus/kafka-delay-requeue
-    tag: "0.0.0"
+    tag: "1.0.1"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -34,8 +34,8 @@ microservice:
         KAFKA_RETRIABLE_TOPIC: "retriable"
         KAFKA_RETRIABLE_DLQ_TOPIC: "retriable.dlq"
   envFrom:
-    - configMapRef:
-        name: kafka-configmap
+  - configMapRef:
+      name: kafka-configmap
   serviceAccount:
     create: false
   replicaCount: 1
