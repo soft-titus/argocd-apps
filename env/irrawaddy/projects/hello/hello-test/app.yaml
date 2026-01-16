@@ -1,0 +1,22 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-test
+  namespace: argocd
+spec:
+  project: hello
+  source:
+    repoURL: git@github.com:soft-titus/argocd-apps.git
+    path: "env/irrawaddy/projects/hello/hello-test"
+    targetRevision: main
+    kustomize: {}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hello-test
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
