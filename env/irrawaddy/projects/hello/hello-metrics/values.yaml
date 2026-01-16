@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "hello-metrics"
   image:
     repository: ghcr.io/soft-titus/hello-metrics
-    tag: "0.0.0"
+    tag: "1.1.0"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -54,13 +54,13 @@ microservice:
     pollingInterval: 30
     cooldownPeriod: 300
     triggers:
-      - type: prometheus
-        metadata:
-          serverAddress: http://prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
-          metricName: hello_requests_per_second
-          query: |
-            sum(rate(hello_requests_total[1m]))
-          threshold: "5"
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
+        metricName: hello_requests_per_second
+        query: |
+          sum(rate(hello_requests_total[1m]))
+        threshold: "5"
   service:
     enabled: true
     ports:
@@ -99,7 +99,7 @@ microservice:
     mountPath: /tmp/metrics
   sidecars:
   - name: metrics
-    image: ghcr.io/soft-titus/hello-metrics:0.0.0
+    image: ghcr.io/soft-titus/hello-metrics:1.1.0
     imagePullPolicy: IfNotPresent
     ports:
     - name: metrics
