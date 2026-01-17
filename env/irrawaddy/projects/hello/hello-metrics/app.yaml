@@ -16,9 +16,15 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: hello-metrics
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
+      - RespectIgnoreDifferences=true
       - CreateNamespace=true

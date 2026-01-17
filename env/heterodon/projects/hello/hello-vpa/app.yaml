@@ -16,9 +16,15 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: hello-vpa
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - '.spec.template.spec.containers[] | select(.name=="microservice") | .resources'
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
+      - RespectIgnoreDifferences=true
       - CreateNamespace=true
