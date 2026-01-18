@@ -1,0 +1,91 @@
+microservice:
+  fullnameOverride: "sudoku-image-generator"
+  image:
+    repository: ghcr.io/soft-titus/sudoku-image-generator
+    tag: "0.0.0"
+    argocdImageUpdater:
+      enabled: true
+      applicationNamespace: "argocd"
+      applicationNamePattern: "sudoku-image-generator"
+      images:
+      - alias: app
+        imageName: ghcr.io/soft-titus/sudoku-image-generator
+        commonUpdateSettings:
+          updateStrategy: semver
+          allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+          forceUpdate: true
+        manifestTargets:
+          helm:
+            name: microservice.image.repository
+            tag: microservice.image.tag
+      writeBackConfig:
+        method: git
+        gitConfig:
+          writeBackTarget: "helmvalues:/env/javelina/projects/sudoku/sudoku-image-generator/values.yaml"
+  configMaps:
+    env:
+      enabled: true
+      data:
+        LOG_LEVEL: "INFO"
+        KAFKA_CONSUMER_GROUP_NAME: "sudoku.image.generate.group"
+        KAFKA_POOLING_INTERVAL_SECONDS: "15"
+        KAFKA_RETRIABLE_TOPIC: "retriable"
+        KAFKA_IMAGE_TOPIC: "sudoku.image.generate"
+        KAFKA_IMAGE_DLQ_TOPIC: "sudoku.image.generate.dlq"
+        MONGO_DB: "sudoku"
+        MONGO_COLLECTION_NAME: "puzzle"
+        S3_BUCKET_NAME: "sudoku"
+        TASK_MAX_RETRIES: "3"
+        TASK_BASE_BACKOFF_SECONDS: "15"
+        TASK_BASE_BACKOFF_MULTIPLIER: "2"
+        TASK_MAX_BACKOFF_SECONDS: "300"
+        SUDOKU_CELL_SIZE_PX: "133"
+        SUDOKU_THICK_LINE_PX: "5"
+        SUDOKU_THIN_LINE_PX: "2"
+        SUDOKU_FONT_SIZE_PX: "86"
+        SUDOKU_CELL_FIRST_COLOR_RGB: "255,255,255"
+        SUDOKU_CELL_SECOND_COLOR_RGB: "235,235,235"
+        SUDOKU_LINE_COLOR_RGB: "0,0,0"
+        SUDOKU_TEXT_COLOR_RGB: "0,0,0"
+        SUDOKU_IMAGE_DPI: "300"
+  envFrom:
+  - configMapRef:
+      name: kafka-configmap
+  - configMapRef:
+      name: mongo-configmap
+  - configMapRef:
+      name: minio-configmap
+  - secretRef:
+      name: mongo-secrets
+  - secretRef:
+      name: minio-secrets
+  serviceAccount:
+    create: false
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  scaledObject:
+    enabled: true
+    minReplicas: 0
+    maxReplicas: 1
+    pollingInterval: 15
+    cooldownPeriod: 30
+    triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-kafka-bootstrap.kafka.svc.cluster.local:9092
+        topic: sudoku.image.generate
+        consumerGroup: "sudoku.image.generate.group"
+        lagThreshold: "1"
+        scaleToZeroOnInvalidOffset: "true"
+  service:
+    enabled: false
+  httpRoute:
+    enabled: false
+  podAnnotations:
+    reloader.stakater.com/auto: "true"
