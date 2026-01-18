@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "sudoku-puzzle-generator"
   image:
     repository: ghcr.io/soft-titus/sudoku-puzzle-generator
-    tag: "1.0.1"
+    tag: "1.1.3"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
