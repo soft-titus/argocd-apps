@@ -1,0 +1,78 @@
+microservice:
+  fullnameOverride: "sudoku-puzzle-generator"
+  image:
+    repository: ghcr.io/soft-titus/sudoku-puzzle-generator
+    tag: "1.0.1"
+    argocdImageUpdater:
+      enabled: true
+      applicationNamespace: "argocd"
+      applicationNamePattern: "sudoku-puzzle-generator"
+      images:
+      - alias: app
+        imageName: ghcr.io/soft-titus/sudoku-puzzle-generator
+        commonUpdateSettings:
+          updateStrategy: semver
+          allowTags: "regexp:^1\\.[0-9]+\\.[0-9]+$"
+          forceUpdate: true
+        manifestTargets:
+          helm:
+            name: microservice.image.repository
+            tag: microservice.image.tag
+      writeBackConfig:
+        method: git
+        gitConfig:
+          writeBackTarget: "helmvalues:/env/javelina/projects/sudoku/sudoku-puzzle-generator/values.yaml"
+  configMaps:
+    env:
+      enabled: true
+      data:
+        LOG_LEVEL: "INFO"
+        KAFKA_CONSUMER_GROUP_NAME: "sudoku.puzzle.generate.group"
+        KAFKA_POOLING_INTERVAL_SECONDS: "15"
+        KAFKA_RETRIABLE_TOPIC: "retriable"
+        KAFKA_PUZZLE_TOPIC: "sudoku.puzzle.generate"
+        KAFKA_PUZZLE_DLQ_TOPIC: "sudoku.puzzle.generate.dlq"
+        KAFKA_IMAGE_TOPIC: "sudoku.image.generate"
+        MONGO_DB: "sudoku"
+        MONGO_COLLECTION_NAME: "puzzle"
+        TASK_MAX_RETRIES: "3"
+        TASK_BASE_BACKOFF_SECONDS: "15"
+        TASK_BASE_BACKOFF_MULTIPLIER: "2"
+        TASK_MAX_BACKOFF_SECONDS: "300"
+  envFrom:
+  - configMapRef:
+      name: kafka-configmap
+  - configMapRef:
+      name: mongo-configmap
+  - secretRef:
+      name: mongo-secrets
+  serviceAccount:
+    create: false
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  scaledObject:
+    enabled: true
+    minReplicas: 0
+    maxReplicas: 1
+    pollingInterval: 15
+    cooldownPeriod: 30
+    triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka-kafka-bootstrap.kafka.svc.cluster.local:9092
+        topic: sudoku.puzzle.generate
+        consumerGroup: "sudoku.puzzle.generate.group"
+        lagThreshold: "1"
+        scaleToZeroOnInvalidOffset: "true"
+  service:
+    enabled: false
+  httpRoute:
+    enabled: false
+  podAnnotations:
+    reloader.stakater.com/auto: "true"
