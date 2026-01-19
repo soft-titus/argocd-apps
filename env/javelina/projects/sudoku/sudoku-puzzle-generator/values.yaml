@@ -59,7 +59,7 @@ microservice:
   scaledObject:
     enabled: true
     minReplicas: 0
-    maxReplicas: 1
+    maxReplicas: 5
     pollingInterval: 15
     cooldownPeriod: 30
     triggers:
