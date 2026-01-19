@@ -69,7 +69,7 @@ microservice:
         topic: sudoku.puzzle.generate
         consumerGroup: "sudoku.puzzle.generate.group"
         lagThreshold: "1"
-        scaleToZeroOnInvalidOffset: "true"
+        scaleToZeroOnInvalidOffset: "false"
   service:
     enabled: false
   httpRoute:

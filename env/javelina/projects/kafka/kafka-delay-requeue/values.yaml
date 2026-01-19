@@ -59,7 +59,7 @@ microservice:
         topic: retriable
         consumerGroup: "kafka.delay.requeue.group"
         lagThreshold: "1"
-        scaleToZeroOnInvalidOffset: "true"
+        scaleToZeroOnInvalidOffset: "false"
   service:
     enabled: false
   httpRoute:

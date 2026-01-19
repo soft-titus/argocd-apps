@@ -82,7 +82,7 @@ microservice:
         topic: sudoku.image.generate
         consumerGroup: "sudoku.image.generate.group"
         lagThreshold: "1"
-        scaleToZeroOnInvalidOffset: "true"
+        scaleToZeroOnInvalidOffset: "false"
   service:
     enabled: false
   httpRoute:
