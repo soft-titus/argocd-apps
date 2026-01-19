@@ -141,7 +141,6 @@ microservice:
     - "--port"
     - "9090"
   readinessProbe:
-    enabled: true
     httpGet:
       scheme: HTTP
       port: http
@@ -152,7 +151,6 @@ microservice:
     failureThreshold: 3
     successThreshold: 1
   livenessProbe:
-    enabled: true
     httpGet:
       scheme: HTTP
       port: http
