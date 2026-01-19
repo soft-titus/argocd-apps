@@ -2,7 +2,7 @@ microservice:
   fullnameOverride: "sudoku-api"
   image:
     repository: ghcr.io/soft-titus/sudoku-api
-    tag: "0.0.0"
+    tag: "1.2.5"
     argocdImageUpdater:
       enabled: true
       applicationNamespace: "argocd"
@@ -121,7 +121,7 @@ microservice:
     mountPath: /tmp/metrics
   sidecars:
   - name: metrics
-    image: ghcr.io/soft-titus/sudoku-api:0.0.0
+    image: ghcr.io/soft-titus/sudoku-api:1.2.5
     imagePullPolicy: IfNotPresent
     ports:
     - name: metrics
