@@ -81,7 +81,7 @@ microservice:
         serverAddress: http://prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
         metricName: sudoku_api_requests_per_second
         query: |
-          sum(rate(sudoku_api_requests_total[1m]))
+          sum(rate(http_requests_total{service="sudoku-api"}[1m]))
         threshold: "5"
   service:
     enabled: true
